@@ -18,7 +18,7 @@ const Topic = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <Wrapper>
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-2">
           <Back />
           <Title>{topic}</Title>
           <Tab />
@@ -42,7 +42,7 @@ const Wrapper = ({ children }: { children: ReactNode }) => {
 const Back = () => {
   return (
     <div className="shrink-0">
-      <div className="text-blue-400 px-4 pt-4">
+      <div className="text-blue-400 px-2 pt-2">
         <Link href="/">〈 뒤로</Link>
       </div>
     </div>
@@ -51,9 +51,9 @@ const Back = () => {
 
 const Title = ({ children }: { children: ReactNode }) => {
   return (
-    <div className="shrink-0 flex justify-between px-4">
-      <div className="text-white font-bold text-5xl">{children}</div>
-      <div className="text-white flex bg-zinc-800 h-fit p-1 rounded-xl gap-1 items-center">
+    <div className="shrink-0 flex justify-between px-2">
+      <div className="text-white font-bold text-2xl">{children}</div>
+      <div className="text-white flex bg-zinc-800 h-fit p-1 rounded-xl gap-1 items-center text-xs">
         <div className="bg-zinc-600 px-2 py-1 rounded-xl">커뮤니티</div>
         <div className="px-2 py-1 hover:bg-zinc-700 rounded-xl cursor-pointer">
           뉴스
@@ -134,7 +134,7 @@ const ImgList = () => {
   if (error) return "An error has occurred: " + error.message;
 
   return (
-    <div className="shrink-0 flex gap-4 p-4 overflow-x-auto no-scrollbar text-white">
+    <div className="shrink-0 flex gap-2 px-2 pt-2 overflow-x-auto no-scrollbar text-white">
       {data.map(
         (
           item: { src: string; title: string; description: string },
@@ -142,7 +142,7 @@ const ImgList = () => {
         ) => (
           <div key={index}>
             <img
-              className="rounded-xl h-36 w-96 object-cover"
+              className="rounded-xl h-20 object-cover"
               src={item.src}
               alt={item.title}
             />
@@ -180,8 +180,8 @@ const List = () => {
   if (error) return "An error has occurred: " + error.message;
 
   return (
-    <div className="grow overflow-hidden h-full p-4 overflow-y-scroll no-scrollbar">
-      <div className="overflow-hidden flex flex-col gap-4">
+    <div className="grow overflow-hidden h-full px-2 pb-2 overflow-y-scroll no-scrollbar">
+      <div className="overflow-hidden flex flex-col gap-2">
         {data.map(
           (
             item: {

@@ -23,7 +23,7 @@ const Wrapper = ({ children }: { children: ReactNode }) => {
 const Back = () => {
   return (
     <div className="shrink-0">
-      <div className="text-blue-400 px-4 pt-4">
+      <div className="text-blue-400 px-2 pt-2">
         <Link href="/topic">〈 뒤로</Link>
       </div>
     </div>
@@ -32,8 +32,8 @@ const Back = () => {
 
 const Title = ({ children }: { children: ReactNode }) => {
   return (
-    <div className="shrink-0 flex justify-between p-4 border-b border-zinc-600">
-      <div className="text-white font-bold text-5xl">{children}</div>
+    <div className="shrink-0 flex justify-between p-2 border-b border-zinc-600">
+      <div className="text-white font-bold text-2xl">{children}</div>
     </div>
   );
 };

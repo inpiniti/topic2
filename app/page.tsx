@@ -33,7 +33,7 @@ const Wrapper = ({ children }: { children: ReactNode }) => {
 
 const DateChange = () => {
   return (
-    <div className="shrink-0 px-4 pt-4 pb-1 flex justify-between">
+    <div className="shrink-0 px-2 pt-2 pb-1 flex justify-between">
       <div className="text-blue-400 cursor-pointer">〈 PREV</div>
       <div className="text-blue-400 cursor-pointer">NEXT 〉</div>
     </div>
@@ -42,8 +42,8 @@ const DateChange = () => {
 
 const Title = () => {
   return (
-    <div className="shrink-0 px-4 pb-4 flex justify-between">
-      <div className="text-white font-bold text-5xl">2025.01.09</div>
+    <div className="shrink-0 px-2 pb-2 flex justify-between">
+      <div className="text-white font-bold text-2xl">2025.01.09</div>
     </div>
   );
 };
@@ -68,7 +68,7 @@ const List = () => {
   if (error) return "An error has occurred: " + error.message;
 
   return (
-    <div className="grow overflow-hidden h-full px-4 pb-4 overflow-y-scroll no-scrollbar">
+    <div className="grow overflow-hidden h-full p-2 overflow-y-scroll no-scrollbar">
       <div className="divide-y divide-zinc-800 rounded-2xl bg-zinc-900 overflow-hidden">
         {data.map(
           (item: { topic: string; relatedTopics: string[] }, index: number) => (
