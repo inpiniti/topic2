@@ -9,8 +9,7 @@ import {
 } from "@tanstack/react-query";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ReactNode, useState } from "react";
-import Image from "next/image";
+import { ReactNode } from "react";
 
 const queryClient = new QueryClient();
 
