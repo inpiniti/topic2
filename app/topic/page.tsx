@@ -2,6 +2,7 @@
 
 import { useSiteStore } from "@/store/useSiteStore";
 import { useTopicStore } from "@/store/useTopicStore";
+import { useTypeStore } from "@/store/useTypeStore";
 import {
   QueryClient,
   QueryClientProvider,
@@ -50,12 +51,34 @@ const Back = () => {
 };
 
 const Title = ({ children }: { children: ReactNode }) => {
+  const { type, setType } = useTypeStore();
+  const { setSite } = useSiteStore();
+
+  const communityClass =
+    type === "community" ? "bg-zinc-600" : "hover:bg-zinc-700  cursor-pointer";
+  const newsClass =
+    type === "news" ? "bg-zinc-600" : "hover:bg-zinc-700  cursor-pointer";
+
+  const handleTypeClick = (type: string) => {
+    setType(type);
+    const site = type === "community" ? "dcinside.com" : "joongang.co.kr";
+    setSite(site);
+  };
+
   return (
     <div className="shrink-0 flex justify-between px-2">
       <div className="text-white font-bold text-2xl">{children}</div>
       <div className="text-white flex bg-zinc-800 h-fit p-1 rounded-xl gap-1 items-center text-xs">
-        <div className="bg-zinc-600 px-2 py-1 rounded-xl">커뮤니티</div>
-        <div className="px-2 py-1 hover:bg-zinc-700 rounded-xl cursor-pointer">
+        <div
+          className={`px-2 py-1 rounded-xl ${communityClass}`}
+          onClick={() => handleTypeClick("community")}
+        >
+          커뮤니티
+        </div>
+        <div
+          className={`px-2 py-1 rounded-xl ${newsClass}`}
+          onClick={() => handleTypeClick("news")}
+        >
           뉴스
         </div>
       </div>
@@ -65,6 +88,7 @@ const Title = ({ children }: { children: ReactNode }) => {
 
 const Tab = () => {
   const { site, setSite } = useSiteStore();
+  const { type } = useTypeStore();
   //const [tab, setTab] = useState("디시인사이드");
 
   const list: { [key: string]: string } = {
@@ -93,18 +117,47 @@ const Tab = () => {
     힙합엘이: "hiphople.com",
   };
 
+  const newList: { [key: string]: string } = {
+    중앙일보: "joongang.co.kr",
+    세계일보: "segye.com",
+    동아일보: "donga.com",
+    조선일보: "chosun.com",
+    서울신문: "seoul.co.kr",
+    한겨레: "hani.co.kr",
+    문화일보: "munhwa.com",
+    국민일보: "kmib.co.kr",
+    한국일보: "hankookilbo.com",
+    경향신문: "khan.co.kr",
+    연합뉴스: "yna.co.kr",
+    "SBS Biz": "biz.sbs.co.kr",
+    TV조선: "news.tvchosun.com",
+    뉴스1: "news1.kr",
+    한국경제TV: "wowtv.co.kr",
+    채널A: "ichannela.com",
+    MBC: "imbc.com",
+    연합뉴스TV: "yonhapnewstv.co.kr",
+    KBS: "kbs.co.kr",
+    SBS: "sbs.co.kr",
+    YTN: "ytn.co.kr",
+    JTBC: "jtbc.co.kr",
+    MBN: "mbn.co.kr",
+    뉴시스: "newsis.com",
+  };
+
+  const selectedList = type === "community" ? list : newList;
+
   const handleTabClick = (tab: string) => {
-    setSite(list[tab]);
+    setSite(selectedList[tab]);
     //setTab(tab);
   };
 
   return (
     <div className="shrink-0 text-white flex overflow-x-auto whitespace-nowrap no-scrollbar border-b border-zinc-500">
-      {Object.keys(list).map((item) => (
+      {Object.keys(selectedList).map((item) => (
         <div
           key={item}
           className={`px-2 ${
-            site === list[item]
+            site === selectedList[item]
               ? "font-bold border-b-2 border-white"
               : "font-thin"
           } cursor-pointer`}
