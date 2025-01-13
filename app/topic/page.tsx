@@ -223,9 +223,8 @@ const List = () => {
     staleTime: 3600000, // 1 hour in milliseconds
   });
 
-  const handleItemClick = (topic: string) => {
-    console.log(topic);
-    router.push("/topic/detail");
+  const handleItemClick = (href: string) => {
+    router.push(href);
   };
 
   if (isPending) return "Loading...";
@@ -242,13 +241,14 @@ const List = () => {
               image: string;
               contents: string;
               date: string;
+              href: string;
             },
             index: number
           ) => (
             <div
               key={index}
               className="relative bg-zinc-800 rounded-xl overflow-hidden group text-white"
-              onClick={() => handleItemClick(item.image)}
+              onClick={() => handleItemClick(item.href)}
             >
               <div>
                 <div className="absolute inset-0 bg-white opacity-0 group-hover:opacity-10 transition-opacity"></div>
