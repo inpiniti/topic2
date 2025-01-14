@@ -271,7 +271,7 @@ const ImgList = () => {
               <div className="w-24 line-clamp-1 absolute bottom-1 left-2 text-xs text-nowrap text-ellipsis">
                 {item.title}
               </div>
-              <div className="w-28 h-20"></div>
+              <div className="w-28 h-0"></div>
             </div>
           )
         )}
