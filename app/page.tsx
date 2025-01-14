@@ -7,7 +7,9 @@ import {
   useQuery,
 } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
-import { ReactNode } from 'react';
+import { ReactNode, useState } from 'react';
+import dayjs from 'dayjs';
+import { useDayStore } from '@/store/useDayStore';
 
 const queryClient = new QueryClient();
 
@@ -16,7 +18,6 @@ export default function Home() {
     <QueryClientProvider client={queryClient}>
       <Wrapper>
         <DateChange />
-        <Title />
         <List />
       </Wrapper>
     </QueryClientProvider>
@@ -32,19 +33,69 @@ const Wrapper = ({ children }: { children: ReactNode }) => {
 };
 
 const DateChange = () => {
-  return (
-    <div className="shrink-0 px-2 pt-2 pb-1 flex justify-between">
-      <div className="text-blue-400 cursor-pointer">〈 PREV</div>
-      <div className="text-blue-400 cursor-pointer">NEXT 〉</div>
-    </div>
-  );
-};
+  const daysOfWeek = ['월', '화', '수', '목', '금', '토', '일'];
+  const today = dayjs();
+  const [startOfWeek, setStartOfWeek] = useState(today.startOf('week'));
+  const { day, setDay } = useDayStore();
 
-const Title = () => {
+  const handleDayClick = (date: string) => {
+    if (dayjs(date).isAfter(today, 'day'))
+      return alert('미래의 날짜는 선택 불가능합니다.');
+    setDay(date);
+  };
+
+  const handlePrev = () => {
+    const prevWeek = startOfWeek.subtract(1, 'week');
+    setStartOfWeek(prevWeek);
+    setDay(prevWeek.add(today.day(), 'day').format('YYYY-MM-DD'));
+  };
+
+  const handleNext = () => {
+    if (startOfWeek.add(1, 'week').isAfter(today, 'day'))
+      return alert('미래의 날짜는 선택 불가능합니다.');
+    const nextWeek = startOfWeek.add(1, 'week');
+    setStartOfWeek(nextWeek);
+    setDay(nextWeek.add(today.day(), 'day').format('YYYY-MM-DD'));
+  };
+
   return (
-    <div className="shrink-0 px-2 pb-2 flex justify-between">
-      <div className="text-white font-bold text-2xl">
-        {new Date().toISOString().split('T')[0]}
+    <div className="shrink-0 px-4 pt-2 pb-1 flex flex-col text-white items-center">
+      <div>{dayjs(day).format('YYYY.MM')}</div>
+      <div className="flex justify-between items-center w-full">
+        <span
+          className="text-white cursor-pointer px-2 py-1 hover:bg-zinc-800 rounded-xl"
+          onClick={handlePrev}
+        >
+          {'〈'}
+        </span>
+        {daysOfWeek.map((_day, index) => {
+          const date = startOfWeek.add(index, 'day').format('DD');
+          const fullDate = startOfWeek.add(index, 'day').format('YYYY-MM-DD');
+          return (
+            <div
+              key={index}
+              className={`text-white cursor-pointer px-2 py-1 rounded-xl hover:bg-zinc-800 ${
+                day === fullDate && 'bg-blue-400 font-bold hover:bg-blue-500'
+              }`}
+              onClick={() => handleDayClick(fullDate)}
+            >
+              <div
+                className={`font-thin text-zinc-400 ${
+                  day === fullDate && 'text-zinc-50'
+                }`}
+              >
+                {date}
+              </div>
+              <div>{_day}</div>
+            </div>
+          );
+        })}
+        <span
+          className="text-white cursor-pointer px-2 py-1 hover:bg-zinc-800 rounded-xl"
+          onClick={handleNext}
+        >
+          {'〉'}
+        </span>
       </div>
     </div>
   );
@@ -52,11 +103,17 @@ const Title = () => {
 
 const List = () => {
   const router = useRouter();
-  const { setTopic } = useTopicStore();
+  const { topic, setTopic } = useTopicStore();
+  const { day } = useDayStore();
+
+  const payload = dayjs(day).isSame(dayjs(), 'day')
+    ? 'realtime'
+    : `daily&date=${day}`;
+
   const { isPending, error, data } = useQuery({
-    queryKey: ['repoData'],
+    queryKey: ['repoData', day],
     queryFn: () =>
-      fetch('/api/google/topics?range=realtime').then((res) => res.json()),
+      fetch(`/api/google/topics?range=${payload}`).then((res) => res.json()),
     staleTime: 3600000, // 1 hour in milliseconds
   });
 
@@ -76,7 +133,11 @@ const List = () => {
           (item: { topic: string; relatedTopics: string[] }, index: number) => (
             <div key={index}>
               <p
-                className="text-white p-2 hover:text-blue-400 hover:bg-zinc-800 cursor-pointer"
+                className={`text-white p-2 hover:text-blue-400 hover:bg-zinc-800 cursor-pointer
+                  ${
+                    topic === item.topic &&
+                    'text-blue-300 bg-zinc-800 font-bold'
+                  }`}
                 onClick={() => handleItemClick(item.topic)}
               >
                 <span className="text-blue-400">{index + 1}. </span>

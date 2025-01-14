@@ -1,5 +1,6 @@
 'use client';
 
+import { useDayStore } from '@/store/useDayStore';
 import { useSiteStore } from '@/store/useSiteStore';
 import { useTopicStore } from '@/store/useTopicStore';
 import { useTypeStore } from '@/store/useTypeStore';
@@ -10,7 +11,7 @@ import {
 } from '@tanstack/react-query';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { ReactNode } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 
 const queryClient = new QueryClient();
 
@@ -42,10 +43,12 @@ const Wrapper = ({ children }: { children: ReactNode }) => {
 };
 
 const Back = () => {
+  const { day } = useDayStore();
+  const text = day === 'realtime' ? '실시간 검색어' : `${day} 검색어`;
   return (
     <div className="shrink-0">
       <div className="text-blue-400 px-2 pt-2">
-        <Link href="/">〈 실시간 검색어</Link>
+        <Link href="/">〈 {text}</Link>
       </div>
     </div>
   );
@@ -215,7 +218,10 @@ const ImgList = () => {
   const router = useRouter();
   const { topic } = useTopicStore();
   const { site } = useSiteStore();
-  const { isPending, error, data } = useQuery({
+  const [refetchCount, setRefetchCount] = useState(0);
+  const maxRefetchAttempts = 3;
+
+  const { isPending, error, data, refetch } = useQuery({
     queryKey: ['img', topic, site],
     queryFn: () =>
       fetch(`/api/google/img?word=${topic} site:${site}`).then((res) =>
@@ -223,6 +229,13 @@ const ImgList = () => {
       ),
     staleTime: 3600000, // 1 hour in milliseconds
   });
+
+  useEffect(() => {
+    if (data && data.length === 0 && refetchCount < maxRefetchAttempts) {
+      setRefetchCount(refetchCount + 1);
+      refetch();
+    }
+  }, [data, refetchCount, refetch]);
 
   const handleClick = (href: string) => {
     router.push(href);
@@ -271,7 +284,10 @@ const List = () => {
   const router = useRouter();
   const { topic } = useTopicStore();
   const { site } = useSiteStore();
-  const { isPending, error, data } = useQuery({
+  const [refetchCount, setRefetchCount] = useState(0);
+  const maxRefetchAttempts = 3;
+
+  const { isPending, error, data, refetch } = useQuery({
     queryKey: ['search', topic, site],
     queryFn: () =>
       fetch(`/api/google/search?word=${topic} site:${site}`).then((res) =>
@@ -279,6 +295,13 @@ const List = () => {
       ),
     staleTime: 3600000, // 1 hour in milliseconds
   });
+
+  useEffect(() => {
+    if (data && data.length === 0 && refetchCount < maxRefetchAttempts) {
+      setRefetchCount(refetchCount + 1);
+      refetch();
+    }
+  }, [data, refetchCount, refetch]);
 
   const handleItemClick = (href: string) => {
     router.push(href);
@@ -328,12 +351,22 @@ const Video = () => {
   const router = useRouter();
   const { topic } = useTopicStore();
   const { site } = useSiteStore();
-  const { isPending, error, data } = useQuery({
+  const [refetchCount, setRefetchCount] = useState(0);
+  const maxRefetchAttempts = 3;
+
+  const { isPending, error, data, refetch } = useQuery({
     queryKey: ['search', topic, site],
     queryFn: () =>
       fetch(`/api/google/video?word=${topic}`).then((res) => res.json()),
     staleTime: 3600000, // 1 hour in milliseconds
   });
+
+  useEffect(() => {
+    if (data && data.length === 0 && refetchCount < maxRefetchAttempts) {
+      setRefetchCount(refetchCount + 1);
+      refetch();
+    }
+  }, [data, refetchCount, refetch]);
 
   const handleItemClick = (href: string) => {
     router.push(href);
@@ -359,7 +392,7 @@ const Video = () => {
           ) => (
             <div
               key={index}
-              className="relative bg-zinc-800 rounded-xl overflow-hidden group text-white flex flex-col"
+              className="relative bg-zinc-800 rounded-xl overflow-hidden group text-white flex flex-col p-2 cursor-pointer"
               onClick={() => handleItemClick(item.href)}
             >
               <div className="flex gap-2">
@@ -371,7 +404,7 @@ const Video = () => {
               </div>
               <div>
                 <div className="absolute inset-0 bg-white opacity-0 group-hover:opacity-10 transition-opacity"></div>
-                <div className="text-white p-2 relative">
+                <div className="text-white relative">
                   <p className="line-clamp-2">{item.contents}</p>
                   <p className="text-xs text-zinc-400">{item.time}</p>
                 </div>
