@@ -16,6 +16,8 @@ const queryClient = new QueryClient();
 
 const Topic = () => {
   const { topic } = useTopicStore();
+  const { type } = useTypeStore();
+
   return (
     <QueryClientProvider client={queryClient}>
       <Wrapper>
@@ -24,7 +26,7 @@ const Topic = () => {
           <Title>{topic}</Title>
           <Tab />
         </div>
-        <List />
+        {type !== 'video' ? <List /> : <Video />}
       </Wrapper>
     </QueryClientProvider>
   );
@@ -59,6 +61,8 @@ const Title = ({ children }: { children: ReactNode }) => {
     type === 'news' ? 'bg-zinc-600' : 'hover:bg-zinc-700  cursor-pointer';
   const wikiClass =
     type === 'wiki' ? 'bg-zinc-600' : 'hover:bg-zinc-700  cursor-pointer';
+  const videoClass =
+    type === 'video' ? 'bg-zinc-600' : 'hover:bg-zinc-700  cursor-pointer';
 
   const handleTypeClick = (type: string) => {
     setType(type);
@@ -72,6 +76,9 @@ const Title = ({ children }: { children: ReactNode }) => {
       case 'news':
         setSite('joongang.co.kr');
         break;
+      case 'video':
+        setSite('youtube.com');
+        break;
     }
   };
 
@@ -79,6 +86,12 @@ const Title = ({ children }: { children: ReactNode }) => {
     <div className="shrink-0 flex justify-between px-2">
       <div className="text-white font-bold text-2xl">{children}</div>
       <div className="text-white flex bg-zinc-800 h-fit p-1 rounded-xl gap-1 items-center text-xs">
+        <div
+          className={`px-2 py-1 rounded-xl ${videoClass}`}
+          onClick={() => handleTypeClick('video')}
+        >
+          비디오
+        </div>
         <div
           className={`px-2 py-1 rounded-xl ${wikiClass}`}
           onClick={() => handleTypeClick('wiki')}
@@ -166,7 +179,13 @@ const Tab = () => {
   };
 
   const selectedList =
-    type === 'community' ? list : type === 'news' ? newList : wikiList;
+    type === 'community'
+      ? list
+      : type === 'news'
+      ? newList
+      : type === 'wiki'
+      ? wikiList
+      : {};
 
   const handleTabClick = (tab: string) => {
     setSite(selectedList[tab]);
@@ -295,6 +314,63 @@ const List = () => {
                   <p className="font-bold text-blue-400">{item.title}</p>
                   <p className="line-clamp-3">{item.contents}</p>
                   <p className="text-xs text-zinc-400">{item.date}</p>
+                </div>
+              </div>
+            </div>
+          )
+        )}
+      </div>
+    </div>
+  );
+};
+
+const Video = () => {
+  const router = useRouter();
+  const { topic } = useTopicStore();
+  const { site } = useSiteStore();
+  const { isPending, error, data } = useQuery({
+    queryKey: ['search', topic, site],
+    queryFn: () =>
+      fetch(`/api/google/video?word=${topic}`).then((res) => res.json()),
+    staleTime: 3600000, // 1 hour in milliseconds
+  });
+
+  const handleItemClick = (href: string) => {
+    router.push(href);
+  };
+
+  if (isPending) return 'Loading...';
+
+  if (error) return 'An error has occurred: ' + error.message;
+
+  return (
+    <div className="grow overflow-hidden h-full p-2 overflow-y-scroll no-scrollbar">
+      <div className="overflow-hidden flex flex-col gap-2">
+        {data.map(
+          (
+            item: {
+              title: string;
+              src: string;
+              contents: string;
+              time: string;
+              href: string;
+            },
+            index: number
+          ) => (
+            <div
+              key={index}
+              className="relative bg-zinc-800 rounded-xl overflow-hidden group text-white flex flex-col"
+              onClick={() => handleItemClick(item.href)}
+            >
+              <div className="flex gap-2">
+                <img className="w-44 h-20 object-cover" src={item.src} />
+                <p className="font-bold text-blue-400">{item.title}</p>
+              </div>
+              <div>
+                <div className="absolute inset-0 bg-white opacity-0 group-hover:opacity-10 transition-opacity"></div>
+                <div className="text-white p-2 relative">
+                  <p className="line-clamp-2">{item.contents}</p>
+                  <p className="text-xs text-zinc-400">{item.time}</p>
                 </div>
               </div>
             </div>
