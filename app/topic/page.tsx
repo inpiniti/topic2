@@ -24,7 +24,6 @@ const Topic = () => {
           <Title>{topic}</Title>
           <Tab />
         </div>
-        <ImgList />
         <List />
       </Wrapper>
     </QueryClientProvider>
@@ -215,34 +214,36 @@ const ImgList = () => {
   if (error) return 'An error has occurred: ' + error.message;
 
   return (
-    <div className="shrink-0 flex gap-2 px-2 pt-2 overflow-x-auto no-scrollbar text-white">
-      {data.map(
-        (
-          item: {
-            src: string;
-            title: string;
-            description: string;
-            href: string;
-          },
-          index: number
-        ) => (
-          <div key={index} className="w-28 h-20 relative">
-            <img
-              className="rounded-xl w-full h-full object-cover"
-              src={item.src}
-              alt={item.title}
-            />
-            <div
-              className="w-full h-full bg-black absolute top-0 left-0 bg-opacity-30 cursor-pointer hover:bg-opacity-0"
-              onClick={() => handleClick(item.href)}
-            />
-            <div className="w-24 line-clamp-1 absolute bottom-1 left-2 text-xs text-nowrap text-ellipsis">
-              {item.title}
+    <div className="shrink-0 pb-2 overflow-x-auto no-scrollbar text-white">
+      <div className="flex gap-2 h-20">
+        {data.map(
+          (
+            item: {
+              src: string;
+              title: string;
+              description: string;
+              href: string;
+            },
+            index: number
+          ) => (
+            <div key={index} className="w-28 h-20 relative">
+              <img
+                className="rounded-xl w-full h-full object-cover"
+                src={item.src}
+                alt={item.title}
+              />
+              <div
+                className="w-full h-full bg-black absolute top-0 left-0 bg-opacity-30 cursor-pointer hover:bg-opacity-0"
+                onClick={() => handleClick(item.href)}
+              />
+              <div className="w-24 line-clamp-1 absolute bottom-1 left-2 text-xs text-nowrap text-ellipsis">
+                {item.title}
+              </div>
+              <div className="w-28 h-20"></div>
             </div>
-            <div className="w-28 h-20"></div>
-          </div>
-        )
-      )}
+          )
+        )}
+      </div>
     </div>
   );
 };
@@ -270,6 +271,7 @@ const List = () => {
 
   return (
     <div className="grow overflow-hidden h-full p-2 overflow-y-scroll no-scrollbar">
+      <ImgList />
       <div className="overflow-hidden flex flex-col gap-2">
         {data.map(
           (
