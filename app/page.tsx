@@ -10,6 +10,7 @@ import { useRouter } from 'next/navigation';
 import { ReactNode, useState } from 'react';
 import dayjs from 'dayjs';
 import { useDayStore } from '@/store/useDayStore';
+import classNames from 'classnames';
 
 const queryClient = new QueryClient();
 
@@ -74,9 +75,12 @@ const DateChange = () => {
           return (
             <div
               key={index}
-              className={`text-white cursor-pointer px-2 py-1 rounded-xl hover:bg-zinc-800 ${
-                day === fullDate && 'bg-blue-400 font-bold hover:bg-blue-500'
-              }`}
+              className={classNames(
+                'text-white cursor-pointer px-2 py-1 rounded-xl hover:bg-zinc-800',
+                {
+                  'bg-blue-400 font-bold hover:bg-blue-400': day === fullDate,
+                }
+              )}
               onClick={() => handleDayClick(fullDate)}
             >
               <div
