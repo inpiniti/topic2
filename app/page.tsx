@@ -1,13 +1,13 @@
-"use client";
+'use client';
 
-import { useTopicStore } from "@/store/useTopicStore";
+import { useTopicStore } from '@/store/useTopicStore';
 import {
   QueryClient,
   QueryClientProvider,
   useQuery,
-} from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
-import { ReactNode } from "react";
+} from '@tanstack/react-query';
+import { useRouter } from 'next/navigation';
+import { ReactNode } from 'react';
 
 const queryClient = new QueryClient();
 
@@ -43,7 +43,9 @@ const DateChange = () => {
 const Title = () => {
   return (
     <div className="shrink-0 px-2 pb-2 flex justify-between">
-      <div className="text-white font-bold text-2xl">2025.01.09</div>
+      <div className="text-white font-bold text-2xl">
+        {new Date().toISOString().split('T')[0]}
+      </div>
     </div>
   );
 };
@@ -52,20 +54,20 @@ const List = () => {
   const router = useRouter();
   const { setTopic } = useTopicStore();
   const { isPending, error, data } = useQuery({
-    queryKey: ["repoData"],
+    queryKey: ['repoData'],
     queryFn: () =>
-      fetch("/api/google/topics?range=realtime").then((res) => res.json()),
+      fetch('/api/google/topics?range=realtime').then((res) => res.json()),
     staleTime: 3600000, // 1 hour in milliseconds
   });
 
   const handleItemClick = (topic: string) => {
     setTopic(topic);
-    router.push("/topic");
+    router.push('/topic');
   };
 
-  if (isPending) return "Loading...";
+  if (isPending) return 'Loading...';
 
-  if (error) return "An error has occurred: " + error.message;
+  if (error) return 'An error has occurred: ' + error.message;
 
   return (
     <div className="grow overflow-hidden h-full p-2 overflow-y-scroll no-scrollbar">

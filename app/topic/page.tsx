@@ -363,7 +363,10 @@ const Video = () => {
               onClick={() => handleItemClick(item.href)}
             >
               <div className="flex gap-2">
-                <img className="w-44 h-20 object-cover" src={item.src} />
+                <img
+                  className="w-32 h-20 object-cover rounded-xl"
+                  src={item.src}
+                />
                 <p className="font-bold text-blue-400">{item.title}</p>
               </div>
               <div>
