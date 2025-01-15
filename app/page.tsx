@@ -10,7 +10,6 @@ import { useRouter } from 'next/navigation';
 import { ReactNode, useState } from 'react';
 import dayjs from 'dayjs';
 import { useDayStore } from '@/store/useDayStore';
-import classNames from 'classnames';
 
 const queryClient = new QueryClient();
 
@@ -75,17 +74,16 @@ const DateChange = () => {
           return (
             <div
               key={index}
-              className={classNames(
-                'text-white cursor-pointer px-2 py-1 rounded-xl hover:bg-zinc-800',
-                {
-                  'bg-blue-400 font-bold hover:bg-blue-400': day == fullDate,
-                }
-              )}
+              className={`text-white cursor-pointer px-2 py-1 rounded-xl ${
+                day === fullDate
+                  ? 'bg-blue-400 font-bold hover:bg-blue-500'
+                  : 'hover:bg-zinc-800'
+              }`}
               onClick={() => handleDayClick(fullDate)}
             >
               <div
-                className={`font-thin text-zinc-400 ${
-                  day === fullDate && 'text-zinc-50'
+                className={`font-thin ${
+                  day === fullDate ? 'text-white' : 'text-zinc-400'
                 }`}
               >
                 {date}
@@ -137,10 +135,11 @@ const List = () => {
           (item: { topic: string; relatedTopics: string[] }, index: number) => (
             <div key={index}>
               <p
-                className={`text-white p-2 hover:text-blue-400 hover:bg-zinc-800 cursor-pointer
+                className={`p-2 hover:text-blue-400 hover:bg-zinc-800 cursor-pointer
                   ${
-                    topic === item.topic &&
-                    'text-blue-300 bg-zinc-800 font-bold'
+                    topic === item.topic
+                      ? 'text-blue-300 bg-zinc-800 font-bold'
+                      : 'text-white'
                   }`}
                 onClick={() => handleItemClick(item.topic)}
               >
