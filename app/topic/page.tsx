@@ -227,7 +227,6 @@ const ImgList = () => {
       fetch(`/api/google/img?word=${topic} site:${site}`).then((res) =>
         res.json()
       ),
-    staleTime: 3600000, // 1 hour in milliseconds
   });
 
   useEffect(() => {
@@ -293,7 +292,6 @@ const List = () => {
       fetch(`/api/google/search?word=${topic} site:${site}`).then((res) =>
         res.json()
       ),
-    staleTime: 3600000, // 1 hour in milliseconds
   });
 
   useEffect(() => {
@@ -355,10 +353,9 @@ const Video = () => {
   const maxRefetchAttempts = 3;
 
   const { isPending, error, data, refetch } = useQuery({
-    queryKey: ['search', topic, site],
+    queryKey: ['video', topic, site],
     queryFn: () =>
       fetch(`/api/google/video?word=${topic}`).then((res) => res.json()),
-    staleTime: 3600000, // 1 hour in milliseconds
   });
 
   useEffect(() => {
