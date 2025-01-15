@@ -78,7 +78,7 @@ const DateChange = () => {
               className={classNames(
                 'text-white cursor-pointer px-2 py-1 rounded-xl hover:bg-zinc-800',
                 {
-                  'bg-blue-400 font-bold hover:bg-blue-400': day === fullDate,
+                  'bg-blue-400 font-bold hover:bg-blue-400': day == fullDate,
                 }
               )}
               onClick={() => handleDayClick(fullDate)}
