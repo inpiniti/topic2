@@ -14,6 +14,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ReactNode } from "react";
 import { DetailItem } from "@/store/useDetailStore";
+import dayjs from "dayjs";
 
 const queryClient = new QueryClient();
 
@@ -47,7 +48,9 @@ const Wrapper = ({ children }: { children: ReactNode }) => {
 const Back = () => {
   const { day } = useDayStore();
 
-  const text = day === "realtime" ? "실시간 검색어" : `${day} 검색어`;
+  const text = dayjs(day).isSame(dayjs(), "day")
+    ? "실시간 검색어"
+    : `${day} 검색어`;
 
   return (
     <div className="shrink-0">
@@ -101,16 +104,10 @@ const Type = () => {
   return (
     <div className="text-white flex bg-zinc-800 h-fit p-1 rounded-xl gap-1 items-center text-xs w-fit shrink-0">
       <div
-        className={`px-2 py-1 rounded-xl ${videoClass}`}
-        onClick={() => handleTypeClick("video")}
+        className={`px-2 py-1 rounded-xl ${newsClass}`}
+        onClick={() => handleTypeClick("news")}
       >
-        비디오
-      </div>
-      <div
-        className={`px-2 py-1 rounded-xl ${wikiClass}`}
-        onClick={() => handleTypeClick("wiki")}
-      >
-        위키
+        뉴스
       </div>
       <div
         className={`px-2 py-1 rounded-xl ${communityClass}`}
@@ -119,10 +116,16 @@ const Type = () => {
         커뮤니티
       </div>
       <div
-        className={`px-2 py-1 rounded-xl ${newsClass}`}
-        onClick={() => handleTypeClick("news")}
+        className={`px-2 py-1 rounded-xl ${wikiClass}`}
+        onClick={() => handleTypeClick("wiki")}
       >
-        뉴스
+        위키
+      </div>
+      <div
+        className={`px-2 py-1 rounded-xl ${videoClass}`}
+        onClick={() => handleTypeClick("video")}
+      >
+        비디오
       </div>
     </div>
   );

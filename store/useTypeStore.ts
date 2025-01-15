@@ -8,7 +8,7 @@ export const useTypeStore = create<{
   devtools(
     persist(
       (set) => ({
-        type: "community",
+        type: "news",
         setType: (type: string) =>
           set({
             type,
