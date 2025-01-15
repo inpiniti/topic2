@@ -27,7 +27,6 @@ const Topic = () => {
         <div className="flex flex-col gap-2">
           <Back />
           <Title>{topic}</Title>
-          <Type />
           <Tab />
         </div>
         {type !== "video" ? <List /> : <Video />}
@@ -61,8 +60,9 @@ const Back = () => {
 
 const Title = ({ children }: { children: ReactNode }) => {
   return (
-    <div className="shrink-0 px-2 text-white font-bold text-2xl">
-      {children}
+    <div className="shrink-0 px-2 text-white font-bold text-2xl flex justify-between">
+      <h1 className="grow line-clamp-1">{children}</h1>
+      <Type />
     </div>
   );
 };
@@ -99,32 +99,30 @@ const Type = () => {
   };
 
   return (
-    <div className="shrink-0 px-2 w-full flex justify-end ">
-      <div className="text-white flex bg-zinc-800 h-fit p-1 rounded-xl gap-1 items-center text-xs w-fit">
-        <div
-          className={`px-2 py-1 rounded-xl ${videoClass}`}
-          onClick={() => handleTypeClick("video")}
-        >
-          비디오
-        </div>
-        <div
-          className={`px-2 py-1 rounded-xl ${wikiClass}`}
-          onClick={() => handleTypeClick("wiki")}
-        >
-          위키
-        </div>
-        <div
-          className={`px-2 py-1 rounded-xl ${communityClass}`}
-          onClick={() => handleTypeClick("community")}
-        >
-          커뮤니티
-        </div>
-        <div
-          className={`px-2 py-1 rounded-xl ${newsClass}`}
-          onClick={() => handleTypeClick("news")}
-        >
-          뉴스
-        </div>
+    <div className="text-white flex bg-zinc-800 h-fit p-1 rounded-xl gap-1 items-center text-xs w-fit shrink-0">
+      <div
+        className={`px-2 py-1 rounded-xl ${videoClass}`}
+        onClick={() => handleTypeClick("video")}
+      >
+        비디오
+      </div>
+      <div
+        className={`px-2 py-1 rounded-xl ${wikiClass}`}
+        onClick={() => handleTypeClick("wiki")}
+      >
+        위키
+      </div>
+      <div
+        className={`px-2 py-1 rounded-xl ${communityClass}`}
+        onClick={() => handleTypeClick("community")}
+      >
+        커뮤니티
+      </div>
+      <div
+        className={`px-2 py-1 rounded-xl ${newsClass}`}
+        onClick={() => handleTypeClick("news")}
+      >
+        뉴스
       </div>
     </div>
   );
@@ -291,7 +289,7 @@ const List = () => {
   });
 
   const handleItemClick = (item: DetailItem) => {
-    if (site === "namu.wiki") {
+    if (site?.includes("namu")) {
       router.push(item.href);
     } else {
       setDetail(item);
