@@ -44,19 +44,10 @@ const Wrapper = ({ children }: { children: ReactNode }) => {
 
 const Back = () => {
   const { day } = useDayStore();
-  const text = day === 'realtime' ? '실시간 검색어' : `${day} 검색어`;
-  return (
-    <div className="shrink-0">
-      <div className="text-blue-400 px-2 pt-2">
-        <Link href="/">〈 {text}</Link>
-      </div>
-    </div>
-  );
-};
-
-const Title = ({ children }: { children: ReactNode }) => {
   const { type, setType } = useTypeStore();
   const { setSite } = useSiteStore();
+
+  const text = day === 'realtime' ? '실시간 검색어' : `${day} 검색어`;
 
   const communityClass =
     type === 'community' ? 'bg-zinc-600' : 'hover:bg-zinc-700  cursor-pointer';
@@ -84,36 +75,45 @@ const Title = ({ children }: { children: ReactNode }) => {
         break;
     }
   };
-
   return (
-    <div className="shrink-0 flex justify-between px-2">
-      <div className="text-white font-bold text-2xl">{children}</div>
-      <div className="text-white flex bg-zinc-800 h-fit p-1 rounded-xl gap-1 items-center text-xs">
-        <div
-          className={`px-2 py-1 rounded-xl ${videoClass}`}
-          onClick={() => handleTypeClick('video')}
-        >
-          비디오
-        </div>
-        <div
-          className={`px-2 py-1 rounded-xl ${wikiClass}`}
-          onClick={() => handleTypeClick('wiki')}
-        >
-          위키
-        </div>
-        <div
-          className={`px-2 py-1 rounded-xl ${communityClass}`}
-          onClick={() => handleTypeClick('community')}
-        >
-          커뮤니티
-        </div>
-        <div
-          className={`px-2 py-1 rounded-xl ${newsClass}`}
-          onClick={() => handleTypeClick('news')}
-        >
-          뉴스
+    <div className="shrink-0">
+      <div className="text-blue-400 px-2 pt-2 flex justify-between">
+        <Link href="/">〈 {text}</Link>
+        <div className="text-white flex bg-zinc-800 h-fit p-1 rounded-xl gap-1 items-center text-xs w-fit">
+          <div
+            className={`px-2 py-1 rounded-xl ${videoClass}`}
+            onClick={() => handleTypeClick('video')}
+          >
+            비디오
+          </div>
+          <div
+            className={`px-2 py-1 rounded-xl ${wikiClass}`}
+            onClick={() => handleTypeClick('wiki')}
+          >
+            위키
+          </div>
+          <div
+            className={`px-2 py-1 rounded-xl ${communityClass}`}
+            onClick={() => handleTypeClick('community')}
+          >
+            커뮤니티
+          </div>
+          <div
+            className={`px-2 py-1 rounded-xl ${newsClass}`}
+            onClick={() => handleTypeClick('news')}
+          >
+            뉴스
+          </div>
         </div>
       </div>
+    </div>
+  );
+};
+
+const Title = ({ children }: { children: ReactNode }) => {
+  return (
+    <div className="shrink-0 px-2 text-white font-bold text-2xl">
+      {children}
     </div>
   );
 };
@@ -218,23 +218,15 @@ const ImgList = () => {
   const router = useRouter();
   const { topic } = useTopicStore();
   const { site } = useSiteStore();
-  const [refetchCount, setRefetchCount] = useState(0);
-  const maxRefetchAttempts = 3;
 
-  const { isPending, error, data, refetch } = useQuery({
-    queryKey: ['img', topic, site],
+  const { isPending, error, data } = useQuery({
+    queryKey: [`img${topic}${site}`],
     queryFn: () =>
       fetch(`/api/google/img?word=${topic} site:${site}`).then((res) =>
         res.json()
       ),
+    staleTime: 3600000,
   });
-
-  useEffect(() => {
-    if (data && data.length === 0 && refetchCount < maxRefetchAttempts) {
-      setRefetchCount(refetchCount + 1);
-      refetch();
-    }
-  }, [data, refetchCount, refetch]);
 
   const handleClick = (href: string) => {
     router.push(href);
@@ -283,23 +275,15 @@ const List = () => {
   const router = useRouter();
   const { topic } = useTopicStore();
   const { site } = useSiteStore();
-  const [refetchCount, setRefetchCount] = useState(0);
-  const maxRefetchAttempts = 3;
 
-  const { isPending, error, data, refetch } = useQuery({
-    queryKey: ['search', topic, site],
+  const { isPending, error, data } = useQuery({
+    queryKey: [`search${topic}${site}`],
     queryFn: () =>
       fetch(`/api/google/search?word=${topic} site:${site}`).then((res) =>
         res.json()
       ),
+    staleTime: 3600000,
   });
-
-  useEffect(() => {
-    if (data && data.length === 0 && refetchCount < maxRefetchAttempts) {
-      setRefetchCount(refetchCount + 1);
-      refetch();
-    }
-  }, [data, refetchCount, refetch]);
 
   const handleItemClick = (href: string) => {
     router.push(href);
@@ -349,21 +333,13 @@ const Video = () => {
   const router = useRouter();
   const { topic } = useTopicStore();
   const { site } = useSiteStore();
-  const [refetchCount, setRefetchCount] = useState(0);
-  const maxRefetchAttempts = 3;
 
-  const { isPending, error, data, refetch } = useQuery({
-    queryKey: ['video', topic, site],
+  const { isPending, error, data } = useQuery({
+    queryKey: [`video${topic}${site}`],
     queryFn: () =>
       fetch(`/api/google/video?word=${topic}`).then((res) => res.json()),
+    staleTime: 3600000,
   });
-
-  useEffect(() => {
-    if (data && data.length === 0 && refetchCount < maxRefetchAttempts) {
-      setRefetchCount(refetchCount + 1);
-      refetch();
-    }
-  }, [data, refetchCount, refetch]);
 
   const handleItemClick = (href: string) => {
     router.push(href);
