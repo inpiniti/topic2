@@ -11,7 +11,7 @@ import {
 } from '@tanstack/react-query';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { ReactNode, useEffect, useState } from 'react';
+import { ReactNode } from 'react';
 
 const queryClient = new QueryClient();
 
