@@ -228,8 +228,26 @@ const ImgList = () => {
     staleTime: 3600000,
   });
 
-  const handleClick = (href: string) => {
-    router.push(href);
+  const handleClick = ({
+    src,
+    title,
+    description,
+    href,
+  }: {
+    src: string;
+    title: string;
+    description: string;
+    href: string;
+  }) => {
+    //router.push(href);
+    router.push(
+      `/topic/detail?href=${encodeURIComponent(
+        href
+      )}&title=${encodeURIComponent(title)}
+      )}&contents=${encodeURIComponent(description)}&image=${encodeURIComponent(
+        src
+      )}`
+    );
   };
 
   if (isPending) return 'Loading...';
@@ -257,7 +275,7 @@ const ImgList = () => {
               />
               <div
                 className="w-full h-full bg-black absolute top-0 left-0 bg-opacity-30 cursor-pointer hover:bg-opacity-0"
-                onClick={() => handleClick(item.href)}
+                onClick={() => handleClick(item)}
               />
               <div className="w-24 line-clamp-1 absolute bottom-1 left-2 text-xs text-nowrap text-ellipsis">
                 {item.title}
@@ -285,8 +303,32 @@ const List = () => {
     staleTime: 3600000,
   });
 
-  const handleItemClick = (href: string) => {
-    router.push(href);
+  const handleItemClick = ({
+    title,
+    image,
+    contents,
+    date,
+    href,
+  }: {
+    title: string;
+    image: string;
+    contents: string;
+    date: string;
+    href: string;
+  }) => {
+    if (site === 'namu.wiki') {
+      router.push(href);
+    } else {
+      router.push(
+        `/topic/detail?href=${encodeURIComponent(
+          href
+        )}&title=${encodeURIComponent(title)}&image=${encodeURIComponent(
+          image
+        )}&contents=${encodeURIComponent(contents)}&date=${encodeURIComponent(
+          date
+        )}`
+      );
+    }
   };
 
   if (isPending) return 'Loading...';
@@ -311,7 +353,7 @@ const List = () => {
             <div
               key={index}
               className="relative bg-zinc-800 rounded-xl overflow-hidden group text-white"
-              onClick={() => handleItemClick(item.href)}
+              onClick={() => handleItemClick(item)}
             >
               <div>
                 <div className="absolute inset-0 bg-white opacity-0 group-hover:opacity-10 transition-opacity"></div>
@@ -343,6 +385,9 @@ const Video = () => {
 
   const handleItemClick = (href: string) => {
     router.push(href);
+
+    //setTopic(topic);
+    //router.push(`/topic/detail?href=${encodeURIComponent(href)}`);
   };
 
   if (isPending) return 'Loading...';
