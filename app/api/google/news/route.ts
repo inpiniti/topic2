@@ -114,21 +114,30 @@ export async function GET(request: NextRequest) {
       })
       .filter((result) => result.title);
 
-    return NextResponse.json(
-      results.map((result, index) => {
-        return {
-          ...result,
-          image: images[index],
-        };
-      })
-    );
+    const result = results.map((result, index) => {
+      return {
+        ...result,
+        image: images[index],
+      };
+    });
+
+    if (result.length === 0) {
+      return NextResponse.json(
+        { error: 'Unknown error occurred' },
+        { status: 500 }
+      );
+    }
+    return NextResponse.json(result);
   } catch (error: unknown) {
     if (error instanceof Error) {
       console.error(error.message);
-      return NextResponse.json([]);
+      return NextResponse.json({ error: error.message }, { status: 500 });
     } else {
       console.error(error);
-      return NextResponse.json([]);
+      return NextResponse.json(
+        { error: 'Unknown error occurred' },
+        { status: 500 }
+      );
     }
   }
 }
