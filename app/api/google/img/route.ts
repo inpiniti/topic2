@@ -17,10 +17,6 @@ export async function GET(request: NextRequest) {
       );
     }
     return NextResponse.json(results);
-
-    return new NextResponse(decodedHtml, {
-      headers: { 'Content-Type': 'text/html; charset=utf-8' }, // 적절한 charset 설정
-    });
   } catch (error: unknown) {
     if (error instanceof Error) {
       console.error(error.message);
