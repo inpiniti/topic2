@@ -4,10 +4,47 @@ import iconv from 'iconv-lite';
 
 import cookies from '../cookies.json';
 
+const usedCookies = new Set<string>();
+
 export async function GET(request: NextRequest) {
   try {
     const word = request.nextUrl.searchParams.get('word');
 
+    const results = await fetchWithCookies(String(word));
+
+    if (results.length === 0) {
+      return NextResponse.json(
+        { error: 'Unknown error occurred' },
+        { status: 500 }
+      );
+    }
+    return NextResponse.json(results);
+
+    //   #main >
+    //       div 들 중에 class 가 안달려 있는거만 뽑아서
+    //   divs 라는 변수에 리스트로 담아줘
+
+    // 위 주석 내용 작성해줘
+
+    // return new NextResponse(decodedHtml, {
+    //   headers: { 'Content-Type': 'text/html; charset=utf-8' }, // 적절한 charset 설정
+    // });
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      console.error(error.message);
+      return NextResponse.json({ error: error.message }, { status: 500 });
+    } else {
+      console.error(error);
+      return NextResponse.json(
+        { error: 'Unknown error occurred' },
+        { status: 500 }
+      );
+    }
+  }
+}
+
+const fetchWithCookies = async (word: string) => {
+  while (usedCookies.size < cookies.length) {
     const query = {
       q: String(word),
       oq: String(word),
@@ -18,6 +55,10 @@ export async function GET(request: NextRequest) {
     const queryString = new URLSearchParams(query).toString();
 
     const randomCookie = cookies[Math.floor(Math.random() * cookies.length)];
+    if (usedCookies.has(randomCookie)) {
+      continue;
+    }
+    usedCookies.add(randomCookie);
 
     const response = await fetch(
       `https://www.google.com/search?${queryString}`,
@@ -113,37 +154,7 @@ export async function GET(request: NextRequest) {
       })
       .filter((result) => result.title);
 
-    // return new NextResponse(decodedHtml, {
-    //   headers: { 'Content-Type': 'text/html; charset=utf-8' }, // 적절한 charset 설정
-    // });
-
-    if (results.length === 0) {
-      return NextResponse.json(
-        { error: 'Unknown error occurred' },
-        { status: 500 }
-      );
-    }
-    return NextResponse.json(results);
-
-    //   #main >
-    //       div 들 중에 class 가 안달려 있는거만 뽑아서
-    //   divs 라는 변수에 리스트로 담아줘
-
-    // 위 주석 내용 작성해줘
-
-    // return new NextResponse(decodedHtml, {
-    //   headers: { 'Content-Type': 'text/html; charset=utf-8' }, // 적절한 charset 설정
-    // });
-  } catch (error: unknown) {
-    if (error instanceof Error) {
-      console.error(error.message);
-      return NextResponse.json({ error: error.message }, { status: 500 });
-    } else {
-      console.error(error);
-      return NextResponse.json(
-        { error: 'Unknown error occurred' },
-        { status: 500 }
-      );
-    }
+    return results;
   }
-}
+  throw new Error('Unknown error occurred');
+};
